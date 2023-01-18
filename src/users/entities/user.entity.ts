@@ -14,7 +14,12 @@ export class UserEntity {
   name: string;
 
   @Column()
-  gmail: string;
+  email: string;
+
+  @Column({
+    nullable: false,
+  })
+  password: string;
 
   @Column()
   role: UserRoles;
