@@ -2,7 +2,7 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { UserEntity } from "../../users/entities/user.entity";
 import { hash, compare } from "bcrypt";
 import { UsersService } from "../../users/services/users.service";
-import { AuthLoginBody } from "../types/auth.types";
+import { AuthSignInBody } from "../types/auth.types";
 import { JwtService } from "@nestjs/jwt";
 import { AuthEntity } from "../entities/auth.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -17,7 +17,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async registerUser(user: UserEntity): Promise<UserEntity> {
+  async signUpUser(user: UserEntity): Promise<UserEntity> {
     try {
       const { password } = user;
 
@@ -28,7 +28,7 @@ export class AuthService {
       throw new HttpException("Internal Server Error", 500);
     }
   }
-  async loginUser({ email, password }: AuthLoginBody): Promise<AuthEntity> {
+  async signInUser({ email, password }: AuthSignInBody): Promise<AuthEntity> {
     const user = await this.usersService.getUserByDynamicParams("email", email);
 
     const validPassword = await compare(password, user.password);
