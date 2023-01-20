@@ -38,12 +38,12 @@ export class AuthService {
     }
 
     const accessToken = this.jwtService.sign(
-      {},
+      { userId: user.id },
       { expiresIn: "5m", secret: "chatin-access-token-secret" }
     );
 
     const refreshToken = this.jwtService.sign(
-      {},
+      { userId: user.id },
       { expiresIn: "30d", secret: "chatin-refresh-token-secret" }
     );
 
@@ -67,7 +67,7 @@ export class AuthService {
         refreshToken: auth.refreshToken,
       });
 
-      return auth;
+      return existedAuth;
     }
     const createdAuth = await this.repositoryAuth.create(auth);
 
