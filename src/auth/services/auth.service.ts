@@ -25,7 +25,7 @@ export class AuthService {
 
       return this.usersService.createUser(user);
     } catch (e) {
-      throw new HttpException("Internal Server Error", 500);
+      throw new HttpException("Bad request", 400);
     }
   }
   async signInUser({ email, password }: AuthSignInBody): Promise<AuthEntity> {
@@ -60,6 +60,15 @@ export class AuthService {
   }
 
   async createAuth(auth: AuthEntity): Promise<AuthEntity> {
+    const existedAuth = await this.repositoryAuth.findOne({ where: { userId: auth.userId } });
+    if (existedAuth) {
+      await this.repositoryAuth.update({ id: existedAuth.id }, {
+        accessToken: auth.accessToken,
+        refreshToken: auth.refreshToken,
+      });
+
+      return auth;
+    }
     const createdAuth = await this.repositoryAuth.create(auth);
 
     await this.repositoryAuth.save(createdAuth);
