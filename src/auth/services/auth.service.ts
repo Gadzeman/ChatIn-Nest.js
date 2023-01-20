@@ -2,7 +2,7 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { UserEntity } from "../../users/entities/user.entity";
 import { hash, compare } from "bcrypt";
 import { UsersService } from "../../users/services/users.service";
-import { AuthSignInBody } from "../types/auth.types";
+import { AuthSignInBody, RefreshTokenBody } from "../types/auth.types";
 import { JwtService } from "@nestjs/jwt";
 import { AuthEntity } from "../entities/auth.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -39,7 +39,7 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(
       { userId: user.id },
-      { expiresIn: "5m", secret: "chatin-access-token-secret" }
+      { expiresIn: "3m", secret: "chatin-access-token-secret" }
     );
 
     const refreshToken = this.jwtService.sign(
@@ -59,13 +59,43 @@ export class AuthService {
     return "logout user";
   }
 
-  async createAuth(auth: AuthEntity): Promise<AuthEntity> {
-    const existedAuth = await this.repositoryAuth.findOne({ where: { userId: auth.userId } });
-    if (existedAuth) {
-      await this.repositoryAuth.update({ id: existedAuth.id }, {
-        accessToken: auth.accessToken,
-        refreshToken: auth.refreshToken,
+  async refreshToken({ userId }: RefreshTokenBody): Promise<AuthEntity> {
+    const auth = await this.repositoryAuth.findOne({ where: { userId } });
+
+    try {
+      !this.jwtService.verify(auth.refreshToken, {
+        secret: "chatin-refresh-token-secret",
       });
+    } catch (e) {
+      await this.repositoryAuth.delete(auth.id);
+
+      throw new HttpException("Refresh token expired or not valid", 403);
+    }
+
+    const accessToken = this.jwtService.sign(
+      { userId },
+      { expiresIn: "3m", secret: "chatin-access-token-secret" }
+    );
+
+    await this.repositoryAuth.update({ userId }, { accessToken });
+
+    auth.accessToken = accessToken;
+
+    return auth;
+  }
+
+  async createAuth(auth: AuthEntity): Promise<AuthEntity> {
+    const existedAuth = await this.repositoryAuth.findOne({
+      where: { userId: auth.userId },
+    });
+    if (existedAuth) {
+      await this.repositoryAuth.update(
+        { id: existedAuth.id },
+        {
+          accessToken: auth.accessToken,
+          refreshToken: auth.refreshToken,
+        }
+      );
 
       return existedAuth;
     }
