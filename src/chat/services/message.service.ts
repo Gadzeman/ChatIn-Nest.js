@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
-export class ChatService {
+export class MessageService {
   constructor(
     @InjectRepository(MessageEntity)
     private readonly repositoryMessage: Repository<MessageEntity>
