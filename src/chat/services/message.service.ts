@@ -14,13 +14,17 @@ export class MessageService {
   private $$message = new Subject<Partial<MessageEntity>>();
   public $message = this.$$message.asObservable();
 
+  public async getMessages(): Promise<MessageEntity[]> {
+    return await this.repositoryMessage.find();
+  }
+
   public async createMessage(message: MessageEntity): Promise<MessageEntity> {
+    this.$$message.next(message);
     const createdMessage = await this.repositoryMessage.create({
       ...message,
       datetime: new Date(),
     });
     await this.repositoryMessage.save(createdMessage);
-    this.$$message.next(message);
     return createdMessage;
   }
 }
