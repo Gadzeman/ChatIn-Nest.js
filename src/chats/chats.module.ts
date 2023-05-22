@@ -11,4 +11,4 @@ import { MessageGateway } from "./gateways/message.gateway";
   providers: [MessageService, MessageGateway],
   exports: [MessageService],
 })
-export class ChatModule {}
+export class ChatsModule {}

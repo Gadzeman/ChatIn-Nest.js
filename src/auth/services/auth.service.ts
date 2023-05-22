@@ -17,6 +17,10 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
+  getAccessToken(): Promise<AuthEntity[]> {
+    return this.repositoryAuth.find();
+  }
+
   async signUpUser(user: UserEntity): Promise<UserEntity> {
     try {
       const { password } = user;
@@ -28,6 +32,7 @@ export class AuthService {
       throw new HttpException("Bad request", 400);
     }
   }
+
   async signInUser({ email, password }: AuthSignInBody): Promise<AuthEntity> {
     const user = await this.usersService.getUserByDynamicParams("email", email);
 

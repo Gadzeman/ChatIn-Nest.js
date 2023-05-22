@@ -4,14 +4,14 @@ import { AppService } from "./app.service";
 import { DbModule } from "./db/db.module";
 import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
-import { ChatModule } from "./chat/chat.module";
+import { ChatsModule } from "./chats/chats.module";
 import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     AuthModule,
-    ChatModule,
+    ChatsModule,
     DbModule,
     UsersModule,
   ],
