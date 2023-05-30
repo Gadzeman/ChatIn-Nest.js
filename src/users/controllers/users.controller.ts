@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Delete, Get, Param } from "@nestjs/common";
 import { UserEntity } from "../entities/user.entity";
 import { UsersService } from "../services/users.service";
 
@@ -9,5 +9,10 @@ export class UsersController {
   @Get()
   async getUsers(): Promise<UserEntity[]> {
     return await this.usersService.getUsers();
+  }
+
+  @Delete(":id")
+  async deleteUser(@Param("id") id: number): Promise<number> {
+    return this.usersService.deleteUser(id);
   }
 }

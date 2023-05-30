@@ -41,4 +41,14 @@ export class UsersService {
       throw new HttpException("User not created", 500);
     }
   }
+
+  async deleteUser(id: number): Promise<number> {
+    try {
+      await this.repositoryUser.delete(id);
+
+      return id;
+    } catch (e) {
+      throw new HttpException("User not deleted", 500);
+    }
+  }
 }
