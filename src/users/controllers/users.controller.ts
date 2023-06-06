@@ -1,13 +1,13 @@
 import { Controller, Delete, Get, Param } from "@nestjs/common";
-import { UserEntity } from "../entities/user.entity";
 import { UsersService } from "../services/users.service";
+import { UserDto } from "../dto/user.dto";
 
 @Controller("users")
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  async getUsers(): Promise<UserEntity[]> {
+  async getUsers(): Promise<UserDto[]> {
     return await this.usersService.getUsers();
   }
 
