@@ -1,12 +1,13 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { hash, compare } from "bcrypt";
 import { UsersService } from "../../users/services/users.service";
-import { AuthSignInBody, RefreshTokenBody } from "../types/auth.types";
 import { JwtService } from "@nestjs/jwt";
 import { AuthEntity } from "../entities/auth.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { SignUpUserDto } from "../dto/sign-up-user.dto";
+import { RefreshTokenDto } from "../dto/refresh-token.dto";
+import { SignInUserDto } from "../dto/sign-in-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -33,7 +34,7 @@ export class AuthService {
     }
   }
 
-  async signInUser({ email, password }: AuthSignInBody): Promise<AuthEntity> {
+  async signInUser({ email, password }: SignInUserDto): Promise<AuthEntity> {
     const user = await this.usersService.getUserByDynamicParams("email", email);
 
     const validPassword = await compare(password, user.password);
@@ -64,7 +65,7 @@ export class AuthService {
     return "logout user";
   }
 
-  async refreshToken({ userId }: RefreshTokenBody): Promise<AuthEntity> {
+  async refreshToken({ userId }: RefreshTokenDto): Promise<AuthEntity> {
     const auth = await this.repositoryAuth.findOne({ where: { userId } });
 
     try {

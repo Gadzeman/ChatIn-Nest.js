@@ -8,9 +8,10 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
-import { AuthSignInBody, RefreshTokenBody } from "../types/auth.types";
 import { AuthEntity } from "../entities/auth.entity";
 import { SignUpUserDto } from "../dto/sign-up-user.dto";
+import { RefreshTokenDto } from "../dto/refresh-token.dto";
+import { SignInUserDto } from "../dto/sign-in-user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -28,7 +29,7 @@ export class AuthController {
   }
 
   @Post("sign-in")
-  async loginUser(@Body() body: AuthSignInBody): Promise<AuthEntity> {
+  async loginUser(@Body() body: SignInUserDto): Promise<AuthEntity> {
     return await this.authService.signInUser(body);
   }
 
@@ -38,7 +39,7 @@ export class AuthController {
   }
 
   @Put("refresh-token")
-  async refreshToken(@Body() body: RefreshTokenBody): Promise<AuthEntity> {
+  async refreshToken(@Body() body: RefreshTokenDto): Promise<AuthEntity> {
     return await this.authService.refreshToken(body);
   }
 }
