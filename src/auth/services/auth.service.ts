@@ -1,5 +1,4 @@
 import { HttpException, Injectable } from "@nestjs/common";
-import { UserEntity } from "../../users/entities/user.entity";
 import { hash, compare } from "bcrypt";
 import { UsersService } from "../../users/services/users.service";
 import { AuthSignInBody, RefreshTokenBody } from "../types/auth.types";
@@ -7,6 +6,7 @@ import { JwtService } from "@nestjs/jwt";
 import { AuthEntity } from "../entities/auth.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { SignUpUserDto } from "../dto/sign-up-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
     return this.repositoryAuth.find();
   }
 
-  async signUpUser(user: UserEntity): Promise<UserEntity> {
+  async signUpUser(user: SignUpUserDto): Promise<SignUpUserDto> {
     try {
       const { password } = user;
 

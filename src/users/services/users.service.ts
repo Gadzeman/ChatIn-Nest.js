@@ -3,6 +3,7 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { UserEntity } from "../entities/user.entity";
+import { SignUpUserDto } from "../../auth/dto/sign-up-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,7 @@ export class UsersService {
     }
   }
 
-  async createUser(user: UserEntity): Promise<UserEntity> {
+  async createUser(user: SignUpUserDto): Promise<SignUpUserDto> {
     try {
       const createdUser = await this.repositoryUser.create(user);
 

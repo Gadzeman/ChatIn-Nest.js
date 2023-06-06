@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Post, Put } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  UsePipes,
+  ValidationPipe,
+} from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
-import { UserEntity } from "../../users/entities/user.entity";
 import { AuthSignInBody, RefreshTokenBody } from "../types/auth.types";
 import { AuthEntity } from "../entities/auth.entity";
+import { SignUpUserDto } from "../dto/sign-up-user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -14,7 +22,8 @@ export class AuthController {
   }
 
   @Post("sign-up")
-  async signUpUser(@Body() body: UserEntity): Promise<UserEntity> {
+  @UsePipes(ValidationPipe)
+  async signUpUser(@Body() body: SignUpUserDto): Promise<SignUpUserDto> {
     return await this.authService.signUpUser(body);
   }
 
