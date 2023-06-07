@@ -45,7 +45,7 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(
       { userId: user.id },
-      { expiresIn: "1m", secret: "chatin-access-token-secret" }
+      { expiresIn: "5m", secret: "chatin-access-token-secret" }
     );
 
     const refreshToken = this.jwtService.sign(
@@ -80,7 +80,7 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(
       { userId },
-      { expiresIn: "1m", secret: "chatin-access-token-secret" }
+      { expiresIn: "5m", secret: "chatin-access-token-secret" }
     );
 
     await this.repositoryAuth.update({ userId }, { accessToken });
