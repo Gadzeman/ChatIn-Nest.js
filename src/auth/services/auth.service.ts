@@ -45,7 +45,7 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(
       { userId: user.id },
-      { expiresIn: "3m", secret: "chatin-access-token-secret" }
+      { expiresIn: "1m", secret: "chatin-access-token-secret" }
     );
 
     const refreshToken = this.jwtService.sign(
@@ -80,7 +80,7 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(
       { userId },
-      { expiresIn: "3m", secret: "chatin-access-token-secret" }
+      { expiresIn: "1m", secret: "chatin-access-token-secret" }
     );
 
     await this.repositoryAuth.update({ userId }, { accessToken });
@@ -110,5 +110,17 @@ export class AuthService {
     await this.repositoryAuth.save(createdAuth);
 
     return createdAuth;
+  }
+
+  public verifyToken(
+    token: string,
+    type: "access" | "refresh" = "access"
+  ): any {
+    return this.jwtService.verify(token, {
+      secret:
+        type === "access"
+          ? "chatin-access-token-secret"
+          : "chatin-refresh-token-secret",
+    });
   }
 }
