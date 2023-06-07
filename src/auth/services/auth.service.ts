@@ -8,6 +8,7 @@ import { Repository } from "typeorm";
 import { SignUpUserDto } from "../dto/sign-up-user.dto";
 import { RefreshTokenDto } from "../dto/refresh-token.dto";
 import { SignInUserDto } from "../dto/sign-in-user.dto";
+import { AuthAccessTokenDto } from "../dto/auth-token.dto";
 
 @Injectable()
 export class AuthService {
@@ -45,7 +46,7 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(
       { userId: user.id },
-      { expiresIn: "5m", secret: "chatin-access-token-secret" }
+      { expiresIn: "30s", secret: "chatin-access-token-secret" }
     );
 
     const refreshToken = this.jwtService.sign(
@@ -65,7 +66,7 @@ export class AuthService {
     return "logout user";
   }
 
-  async refreshToken({ userId }: RefreshTokenDto): Promise<AuthEntity> {
+  async refreshToken({ userId }: RefreshTokenDto): Promise<AuthAccessTokenDto> {
     const auth = await this.repositoryAuth.findOne({ where: { userId } });
 
     try {
@@ -80,14 +81,14 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(
       { userId },
-      { expiresIn: "5m", secret: "chatin-access-token-secret" }
+      { expiresIn: "30s", secret: "chatin-access-token-secret" }
     );
 
     await this.repositoryAuth.update({ userId }, { accessToken });
 
-    auth.accessToken = accessToken;
+    const token = accessToken;
 
-    return auth;
+    return { token };
   }
 
   async createAuth(auth: AuthEntity): Promise<AuthEntity> {

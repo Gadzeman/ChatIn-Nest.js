@@ -12,6 +12,7 @@ import { AuthEntity } from "../entities/auth.entity";
 import { SignUpUserDto } from "../dto/sign-up-user.dto";
 import { RefreshTokenDto } from "../dto/refresh-token.dto";
 import { SignInUserDto } from "../dto/sign-in-user.dto";
+import { AuthAccessTokenDto } from "../dto/auth-token.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -39,7 +40,9 @@ export class AuthController {
   }
 
   @Put("refresh-token")
-  async refreshToken(@Body() body: RefreshTokenDto): Promise<AuthEntity> {
+  async refreshToken(
+    @Body() body: RefreshTokenDto
+  ): Promise<AuthAccessTokenDto> {
     return await this.authService.refreshToken(body);
   }
 }
