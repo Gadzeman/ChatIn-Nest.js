@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
-import { ChatsService } from "../services/chats.service";
+import { ChatService } from "../services/chat.service";
 import { ChatEntity } from "../entities/chat.entity";
 
-@Controller("chats")
-export class ChatsController {
-  constructor(private readonly chatsService: ChatsService) {}
+@Controller("chat")
+export class ChatController {
+  constructor(private readonly chatsService: ChatService) {}
 
   @Get()
   getChats(): Promise<ChatEntity[]> {

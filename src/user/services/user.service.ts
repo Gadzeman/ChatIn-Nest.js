@@ -7,7 +7,7 @@ import { SignUpUserDto } from "../../auth/dto/sign-up-user.dto";
 import { UserDto } from "../dto/user.dto";
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly repositoryUser: Repository<UserEntity>

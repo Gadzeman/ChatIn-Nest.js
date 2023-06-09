@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { hash, compare } from "bcrypt";
-import { UsersService } from "../../users/services/users.service";
+import { UserService } from "../../user/services/user.service";
 import { JwtService } from "@nestjs/jwt";
 import { AuthEntity } from "../entities/auth.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     @InjectRepository(AuthEntity)
     private repositoryAuth: Repository<AuthEntity>,
-    private usersService: UsersService,
+    private usersService: UserService,
     private jwtService: JwtService
   ) {}
 

@@ -1,6 +1,6 @@
 import { IsEmail, IsIn, Length, Matches } from "class-validator";
 import { Exclude } from "class-transformer";
-import { UserRoles } from "../../users/entities/user.entity";
+import { UserRoles } from "../../user/entities/user.entity";
 
 export class SignUpUserDto {
   @Length(3, 20)

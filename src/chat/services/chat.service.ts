@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { ChatEntity } from "../entities/chat.entity";
 
 @Injectable({})
-export class ChatsService {
+export class ChatService {
   constructor(
     @InjectRepository(ChatEntity)
     private readonly repositoryChat: Repository<ChatEntity>
