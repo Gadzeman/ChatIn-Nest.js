@@ -1,6 +1,7 @@
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
@@ -11,18 +12,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Server;
 
-  handleConnection(client: Socket) {
-    return null;
-    // Handle new client connection
+  handleConnection(client: Socket): void {
+    console.log("connected", client.id);
   }
 
-  handleDisconnect(client: Socket) {
-    return null;
-    // Handle client disconnection
+  handleDisconnect(client: Socket): void {
+    console.log("disconnected", client.id);
   }
 
-  handleChatCreation(data: any) {
-    return null;
-    // Handle chat creation event from client
+  @SubscribeMessage("chat-created")
+  handleChatCreated(): void {
+    console.log("chat created successfully");
   }
 }
