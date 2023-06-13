@@ -8,7 +8,7 @@ import { MessageGateway } from "./gateways/message.gateway";
 @Module({
   imports: [TypeOrmModule.forFeature([MessageEntity])],
   controllers: [MessageController],
-  providers: [MessageService, MessageGateway],
+  providers: [MessageService],
   exports: [MessageService],
 })
 export class ChatModule {}

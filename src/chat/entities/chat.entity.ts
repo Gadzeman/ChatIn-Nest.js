@@ -9,8 +9,6 @@ export class ChatEntity {
   @Column()
   name: string;
 
-  @ManyToOne(() => UserEntity, (user) => user, {
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(() => UserEntity, (user) => user)
   owner: UserEntity;
 }
