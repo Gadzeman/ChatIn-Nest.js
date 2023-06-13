@@ -6,22 +6,19 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { ChatDto } from "../dto/chat.dto";
 
 @WebSocketGateway(3001)
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Server;
 
-  handleConnection(client: Socket): void {
-    console.log("connected", client.id);
-  }
+  handleConnection(client: Socket): void {}
 
-  handleDisconnect(client: Socket): void {
-    console.log("disconnected", client.id);
-  }
+  handleDisconnect(client: Socket): void {}
 
   @SubscribeMessage("chat-created")
-  handleChatCreated(): void {
-    console.log("chat created successfully");
+  handleChatCreated(client: Socket, data: ChatDto): void {
+    this.server.emit("chat-created", data);
   }
 }
