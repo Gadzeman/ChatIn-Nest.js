@@ -12,8 +12,13 @@ export class ChatService {
 
   getChats(userId: number): Promise<ChatEntity[]> {
     return this.repositoryChat.find({
+      relations: {
+        users: true,
+      },
       where: {
-        ownerId: userId,
+        users: {
+          id: userId,
+        },
       },
     });
   }

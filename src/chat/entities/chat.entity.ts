@@ -1,5 +1,13 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { UserEntity } from "../../user/entities/user.entity";
+import { UserDto } from "../../user/dto/user.dto";
+import { JoinTable } from "typeorm";
 
 @Entity()
 export class ChatEntity {
@@ -14,4 +22,8 @@ export class ChatEntity {
 
   @ManyToOne(() => UserEntity, (user) => user)
   owner: UserEntity;
+
+  @ManyToMany(() => UserEntity)
+  @JoinTable()
+  users: UserDto[];
 }
