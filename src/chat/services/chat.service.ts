@@ -10,10 +10,10 @@ export class ChatService {
     private readonly repositoryChat: Repository<ChatEntity>
   ) {}
 
-  getChats(): Promise<ChatEntity[]> {
+  getChats(userId: number): Promise<ChatEntity[]> {
     return this.repositoryChat.find({
-      relations: {
-        owner: true,
+      where: {
+        ownerId: userId,
       },
     });
   }

@@ -9,6 +9,9 @@ export class ChatEntity {
   @Column()
   name: string;
 
+  @Column()
+  ownerId: number;
+
   @ManyToOne(() => UserEntity, (user) => user)
   owner: UserEntity;
 }
