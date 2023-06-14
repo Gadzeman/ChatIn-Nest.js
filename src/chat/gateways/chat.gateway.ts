@@ -17,6 +17,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: Socket): void {}
 
+  @SubscribeMessage("join-room")
+  handleJoinRoom(client: Socket): void {}
+
   @SubscribeMessage("chat-created")
   handleChatCreated(client: Socket, data: ChatDto): void {
     this.server.emit("chat-created", data);

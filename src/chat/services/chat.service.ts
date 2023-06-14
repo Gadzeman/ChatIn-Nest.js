@@ -24,8 +24,10 @@ export class ChatService {
   }
 
   async createChat(chat: ChatEntity): Promise<ChatEntity> {
-    const createdChat = await this.repositoryChat.create(chat);
-    await this.repositoryChat.save(createdChat);
-    return createdChat;
+    const createChat = await this.repositoryChat.create({
+      ...chat,
+      users: [{ id: chat.ownerId }],
+    });
+    return this.repositoryChat.save(createChat);
   }
 }
