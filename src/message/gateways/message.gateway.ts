@@ -5,50 +5,28 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import { Server } from "socket.io";
-import { Observable, Subject } from "rxjs";
-import { MessageEntity } from "../entities/message.entity";
-import { MessageService } from "../services/message.service";
-
-enum EventNames {
-  MessageEventName = "message-event",
-}
-
-interface MessageEvent {
-  event: EventNames.MessageEventName;
-  data: MessageEntity;
-}
+import { Server, Socket } from "socket.io";
+import { MessageDto } from "../dto/message.dto";
+import { ChatService } from "../../chat/services/chat.service";
 
 @WebSocketGateway(3001)
 export class MessageGateway
   implements OnGatewayDisconnect, OnGatewayConnection
 {
-  constructor(private messageService: MessageService) {
-    this.messageService.$message.subscribe((message: MessageEntity) => {
-      this.$$messageEvent.next({
-        event: EventNames.MessageEventName,
-        data: message,
-      });
-    });
-  }
+  constructor(private chatService: ChatService) {}
 
   @WebSocketServer()
   private server: Server;
-  private $$messageEvent = new Subject<MessageEvent>();
-  private websockets = new Map<WebSocket, Subject<MessageEvent>>();
 
-  @SubscribeMessage(EventNames.MessageEventName)
-  handleMessageEvent(): Observable<MessageEvent> {
-    return this.$$messageEvent.asObservable();
-  }
+  handleDisconnect(ws: WebSocket): void {}
 
-  handleDisconnect(ws: WebSocket): void {
-    this.websockets.get(ws).complete();
-    this.websockets.get(ws).unsubscribe();
-    this.websockets.delete(ws);
-  }
+  handleConnection(ws: WebSocket): void {}
 
-  handleConnection(ws: WebSocket): void {
-    this.websockets.set(ws, new Subject<MessageEvent>());
+  @SubscribeMessage("message-created")
+  async handleMessageEvent(client: Socket, data: MessageDto): Promise<void> {
+    const userIds = await this.chatService.getChatUserIds(data.chatId);
+    userIds.forEach((userId) => {
+      this.server.to(userId.toString()).emit("message-created", data);
+    });
   }
 }
