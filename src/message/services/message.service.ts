@@ -14,8 +14,12 @@ export class MessageService {
   private $$message = new Subject<Partial<MessageEntity>>();
   public $message = this.$$message.asObservable();
 
-  public async getMessages(): Promise<MessageEntity[]> {
-    return await this.repositoryMessage.find();
+  public async getMessages(userId: number): Promise<MessageEntity[]> {
+    return await this.repositoryMessage.find({
+      where: {
+        userId,
+      },
+    });
   }
 
   public async createMessage(message: MessageEntity): Promise<MessageEntity> {

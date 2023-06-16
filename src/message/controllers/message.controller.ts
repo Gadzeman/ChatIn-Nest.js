@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { MessageService } from "../services/message.service";
 import { MessageEntity } from "../entities/message.entity";
 
@@ -6,9 +6,9 @@ import { MessageEntity } from "../entities/message.entity";
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @Get()
-  async getMessages(): Promise<MessageEntity[]> {
-    return await this.messageService.getMessages();
+  @Get("/:userId")
+  async getMessages(@Param("userId") userId: number): Promise<MessageEntity[]> {
+    return this.messageService.getMessages(userId);
   }
 
   @Post()
