@@ -2,12 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { ChatEntity } from "../entities/chat.entity";
+import { WsService } from "../../ws/ws.service";
 
 @Injectable({})
 export class ChatService {
   constructor(
     @InjectRepository(ChatEntity)
-    private readonly repositoryChat: Repository<ChatEntity>
+    private readonly repositoryChat: Repository<ChatEntity>,
+    private wsService: WsService
   ) {}
 
   getChats(userId: number): Promise<ChatEntity[]> {
@@ -40,6 +42,7 @@ export class ChatService {
     const createChat = await this.repositoryChat.create({
       ...chat,
       users: [{ id: chat.ownerId }],
+      roomId: this.wsService.generateRoomId(),
     });
     return this.repositoryChat.save(createChat);
   }

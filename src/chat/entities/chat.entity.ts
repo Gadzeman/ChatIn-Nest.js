@@ -20,6 +20,11 @@ export class ChatEntity {
   @Column()
   ownerId: number;
 
+  @Column({
+    nullable: false,
+  })
+  roomId: string;
+
   @ManyToOne(() => UserEntity, (user) => user)
   owner: UserEntity;
 
