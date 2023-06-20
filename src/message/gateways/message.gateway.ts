@@ -8,6 +8,7 @@ import {
 import { Server, Socket } from "socket.io";
 import { MessageDto } from "../dto/message.dto";
 import { ChatService } from "../../chat/services/chat.service";
+import { ChatDto } from "../../chat/dto/chat.dto";
 
 @WebSocketGateway(3001)
 export class MessageGateway
@@ -22,11 +23,11 @@ export class MessageGateway
 
   handleConnection(ws: WebSocket): void {}
 
-  @SubscribeMessage("message-created")
-  async handleMessageEvent(client: Socket, data: MessageDto): Promise<void> {
-    const userIds = await this.chatService.getChatUserIds(data.chatId);
-    userIds.forEach((userId) => {
-      this.server.to(userId.toString()).emit("message-created", data);
-    });
+  @SubscribeMessage("messageCreated")
+  async handleMessageEvent(
+    client: Socket,
+    { message, chat }: { message: MessageDto; chat: ChatDto }
+  ): Promise<void> {
+    this.server.to(chat.roomId).emit("messageCreated", message);
   }
 }

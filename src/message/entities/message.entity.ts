@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ChatEntity } from "../../chat/entities/chat.entity";
+import { UserEntity } from "../../user/entities/user.entity";
 
 @Entity()
 export class MessageEntity {
@@ -30,4 +31,7 @@ export class MessageEntity {
     onDelete: "CASCADE",
   })
   chat: ChatEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user)
+  user: UserEntity;
 }

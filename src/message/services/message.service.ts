@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { MessageEntity } from "../entities/message.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Subject } from "rxjs";
 
 @Injectable()
 export class MessageService {
@@ -11,24 +10,28 @@ export class MessageService {
     private readonly repositoryMessage: Repository<MessageEntity>
   ) {}
 
-  private $$message = new Subject<Partial<MessageEntity>>();
-  public $message = this.$$message.asObservable();
-
-  public async getMessages(userId: number): Promise<MessageEntity[]> {
+  public async getMessages(chatId: number): Promise<MessageEntity[]> {
     return await this.repositoryMessage.find({
+      relations: {
+        user: true,
+      },
       where: {
-        userId,
+        chatId,
       },
     });
   }
 
   public async createMessage(message: MessageEntity): Promise<MessageEntity> {
-    this.$$message.next(message);
-    const createdMessage = await this.repositoryMessage.create({
+    const createMessage = await this.repositoryMessage.create({
       ...message,
       datetime: new Date(),
     });
-    await this.repositoryMessage.save(createdMessage);
-    return createdMessage;
+
+    const createdMessage = await this.repositoryMessage.save(createMessage);
+
+    return this.repositoryMessage.findOne({
+      where: { id: createdMessage.id },
+      relations: { user: true },
+    });
   }
 }

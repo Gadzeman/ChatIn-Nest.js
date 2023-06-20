@@ -6,9 +6,9 @@ import { MessageEntity } from "../entities/message.entity";
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @Get("/:userId")
-  async getMessages(@Param("userId") userId: number): Promise<MessageEntity[]> {
-    return this.messageService.getMessages(userId);
+  @Get("/:chatId")
+  async getMessages(@Param("chatId") chatId: number): Promise<MessageEntity[]> {
+    return this.messageService.getMessages(chatId);
   }
 
   @Post()
