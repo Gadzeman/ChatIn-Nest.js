@@ -12,11 +12,14 @@ export class MessageService {
 
   public async getMessages(chatId: number): Promise<MessageEntity[]> {
     return await this.repositoryMessage.find({
+      where: {
+        chatId,
+      },
       relations: {
         user: true,
       },
-      where: {
-        chatId,
+      order: {
+        datetime: "ASC",
       },
     });
   }
