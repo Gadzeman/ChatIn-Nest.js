@@ -3,12 +3,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { ChatEntity } from "../entities/chat.entity";
 import { WsService } from "../../ws/ws.service";
+import { AddUserToChatDto } from "../dto/add-user-to-chat.dto";
+import { UserService } from "../../user/services/user.service";
 
 @Injectable({})
 export class ChatService {
   constructor(
     @InjectRepository(ChatEntity)
     private readonly repositoryChat: Repository<ChatEntity>,
+    private usersService: UserService,
     private wsService: WsService
   ) {}
 
@@ -25,25 +28,34 @@ export class ChatService {
     });
   }
 
-  async getChatUserIds(chatId: number): Promise<number[]> {
-    const chat = await this.repositoryChat.findOne({
-      relations: {
-        users: true,
-      },
-      where: {
-        id: chatId,
-      },
-    });
-
-    return chat.users.map((user) => user.id);
-  }
-
   async createChat(chat: ChatEntity): Promise<ChatEntity> {
     const createChat = await this.repositoryChat.create({
       ...chat,
       users: [{ id: chat.ownerId }],
       roomId: this.wsService.generateRoomId(),
     });
+
     return this.repositoryChat.save(createChat);
+  }
+
+  async addUserToChat({
+    chatId,
+    usersIds,
+  }: AddUserToChatDto): Promise<AddUserToChatDto> {
+    const users = await this.usersService.getUsersByIds(usersIds);
+
+    const chat = await this.repositoryChat.findOne({
+      where: { id: chatId },
+      relations: { users: true },
+    });
+
+    chat.users.push(...users);
+
+    await this.repositoryChat.save(chat);
+
+    return {
+      chatId,
+      usersIds,
+    };
   }
 }

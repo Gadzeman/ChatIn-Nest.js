@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -17,6 +17,10 @@ export class UserService {
     return await this.repositoryUser.find({
       select: ["id", "name", "email", "role"],
     });
+  }
+
+  async getUsersByIds(usersIds: number[]): Promise<UserDto[]> {
+    return this.repositoryUser.find({ where: { id: In(usersIds) } });
   }
 
   async getUserByDynamicParams(
