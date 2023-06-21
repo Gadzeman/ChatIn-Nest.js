@@ -13,9 +13,12 @@ export class ChatController {
     return this.chatsService.getChats(userId);
   }
 
-  @Get("/users/:chatId")
-  getChatUsers(@Param("chatId") chatId: number): Promise<UserDto[]> {
-    return this.chatsService.getChatUsers(chatId);
+  @Get("/users/:chatId/:option")
+  getChatUsers(
+    @Param("chatId") chatId: number,
+    @Param("option") option: "add" | "remove"
+  ): Promise<UserDto[]> {
+    return this.chatsService.getChatUsers(chatId, option);
   }
 
   @Post()

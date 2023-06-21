@@ -29,15 +29,29 @@ export class ChatService {
     });
   }
 
-  async getChatUsers(chatId: number): Promise<UserDto[]> {
-    const chat = await this.repositoryChat
-      .createQueryBuilder("chat")
-      .where("chat.id = :chatId", { chatId })
-      .leftJoin("chat.users", "users")
-      .select(["chat", "users.id", "users.name"])
-      .getOne();
+  async getChatUsers(
+    chatId: number,
+    option: "add" | "remove"
+  ): Promise<UserDto[]> {
+    if (option === "add") {
+      const chat = await this.repositoryChat.findOne({
+        where: { id: chatId },
+        relations: { users: true },
+      });
 
-    return chat.users;
+      return await this.usersService.getUsersByNotIds(
+        chat.users.map((user) => user.id)
+      );
+    } else {
+      const chat = await this.repositoryChat
+        .createQueryBuilder("chat")
+        .where("chat.id = :chatId", { chatId })
+        .leftJoin("chat.users", "users")
+        .select(["chat", "users.id", "users.name"])
+        .getOne();
+
+      return chat.users;
+    }
   }
 
   async createChat(chat: ChatEntity): Promise<ChatEntity> {

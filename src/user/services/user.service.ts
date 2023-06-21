@@ -23,6 +23,13 @@ export class UserService {
     return this.repositoryUser.find({ where: { id: In(usersIds) } });
   }
 
+  async getUsersByNotIds(usersIds: number[]): Promise<UserDto[]> {
+    return this.repositoryUser
+      .createQueryBuilder("user")
+      .where("user.id NOT IN (:...usersIds)", { usersIds })
+      .getMany();
+  }
+
   async getUserByDynamicParams(
     column: string,
     value: string | number
