@@ -5,6 +5,7 @@ import { ChatEntity } from "../entities/chat.entity";
 import { WsService } from "../../ws/ws.service";
 import { AddUserToChatDto } from "../dto/add-user-to-chat.dto";
 import { UserService } from "../../user/services/user.service";
+import { UserDto } from "../../user/dto/user.dto";
 
 @Injectable({})
 export class ChatService {
@@ -26,6 +27,17 @@ export class ChatService {
         },
       },
     });
+  }
+
+  async getChatUsers(chatId: number): Promise<UserDto[]> {
+    const chat = await this.repositoryChat
+      .createQueryBuilder("chat")
+      .where("chat.id = :chatId", { chatId })
+      .leftJoin("chat.users", "users")
+      .select(["chat", "users.id", "users.name"])
+      .getOne();
+
+    return chat.users;
   }
 
   async createChat(chat: ChatEntity): Promise<ChatEntity> {
