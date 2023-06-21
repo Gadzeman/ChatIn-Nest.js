@@ -14,9 +14,7 @@ export class UserService {
   ) {}
 
   async getUsers(): Promise<UserDto[]> {
-    return await this.repositoryUser.find({
-      select: ["id", "name", "email", "role"],
-    });
+    return await this.repositoryUser.find();
   }
 
   async getUsersByIds(usersIds: number[]): Promise<UserDto[]> {
