@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { ChatService } from "../services/chat.service";
 import { ChatEntity } from "../entities/chat.entity";
-import { AddUserToChatDto } from "../dto/add-user-to-chat.dto";
+import { UpdateChatUsersDto } from "../dto/add-user-to-chat.dto";
 import { UserDto } from "../../user/dto/user.dto";
 
 @Controller("chat")
@@ -26,8 +26,10 @@ export class ChatController {
     return this.chatsService.createChat(chat);
   }
 
-  @Post("/add-user-to-chat")
-  addUserToChat(@Body() data: AddUserToChatDto): Promise<AddUserToChatDto> {
-    return this.chatsService.addUserToChat(data);
+  @Put("/users")
+  updateChatUsers(
+    @Body() data: UpdateChatUsersDto
+  ): Promise<UpdateChatUsersDto> {
+    return this.chatsService.updateChatUsers(data);
   }
 }

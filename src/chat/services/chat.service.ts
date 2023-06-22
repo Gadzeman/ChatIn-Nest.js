@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { ChatEntity } from "../entities/chat.entity";
 import { WsService } from "../../ws/ws.service";
-import { AddUserToChatDto } from "../dto/add-user-to-chat.dto";
+import { UpdateChatUsersDto } from "../dto/add-user-to-chat.dto";
 import { UserService } from "../../user/services/user.service";
 import { UserDto } from "../../user/dto/user.dto";
 
@@ -65,24 +65,29 @@ export class ChatService {
     return this.repositoryChat.save(createChat);
   }
 
-  async addUserToChat({
+  async updateChatUsers({
     chatId,
     usersIds,
-  }: AddUserToChatDto): Promise<AddUserToChatDto> {
-    const users = await this.usersService.getUsersByIds(usersIds);
-
+    option,
+  }: UpdateChatUsersDto): Promise<UpdateChatUsersDto> {
     const chat = await this.repositoryChat.findOne({
       where: { id: chatId },
       relations: { users: true },
     });
 
-    chat.users.push(...users);
+    const users =
+      option === "add"
+        ? await this.usersService.getUsersByIds(usersIds)
+        : chat.users.filter((user) => !usersIds.find((id) => id === user.id));
+
+    option === "add" ? chat.users.push(...users) : (chat.users = users);
 
     await this.repositoryChat.save(chat);
 
     return {
       chatId,
       usersIds,
+      option,
     };
   }
 }
