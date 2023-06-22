@@ -46,8 +46,7 @@ export class ChatService {
       const chat = await this.repositoryChat
         .createQueryBuilder("chat")
         .where("chat.id = :chatId", { chatId })
-        .leftJoin("chat.users", "user")
-        .where("user.id != chat.ownerId")
+        .leftJoin("chat.users", "user", "user.id != chat.ownerId")
         .select(["chat", "user.id", "user.name"])
         .getOne();
 
