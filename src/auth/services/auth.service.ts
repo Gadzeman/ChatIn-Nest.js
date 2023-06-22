@@ -36,7 +36,11 @@ export class AuthService {
   }
 
   async signInUser({ email, password }: SignInUserDto): Promise<AuthEntity> {
-    const user = await this.usersService.getUserByDynamicParams("email", email);
+    const user = await this.usersService.getUserByDynamicParams(
+      "email",
+      email,
+      ["id", "password"]
+    );
 
     const validPassword = await compare(password, user.password);
 

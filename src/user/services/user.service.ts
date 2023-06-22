@@ -30,12 +30,15 @@ export class UserService {
 
   async getUserByDynamicParams(
     column: string,
-    value: string | number
+    value: string | number,
+    selectColumns: string[]
   ): Promise<UserEntity> {
     try {
-      return await this.repositoryUser.findOne({
-        where: { [column]: value },
-      });
+      return this.repositoryUser
+        .createQueryBuilder("user")
+        .where(`user.${column} = :value`, { value })
+        .select(selectColumns.map((column) => `user.${column}`))
+        .getOne();
     } catch (e) {
       throw new HttpException("User not found", 500);
     }
